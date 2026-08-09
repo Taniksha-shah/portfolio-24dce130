@@ -1,24 +1,13 @@
-import Header from './components/Header';
-import About from './components/About';
-import Skills from './components/Skills';
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import Projects from './pages/Projects';
+import Contact from './pages/Contact';
 import './App.css';
 
 function App() {
   const studentName = "Taniksha Shah";
-  const studentTitle = "Aspiring Machine Learning Engineer";
-  const studentBio =
-    "I'm a Computer Engineering student specializing in Data Science and Machine Learning. I build end-to-end ML systems — from data pipelines and model architecture to deployment — with a focus on turning research ideas into working, reliable products.";
-  const skillsList = [
-    "Python",
-    "PyTorch",
-    "Scikit-learn",
-    "Pandas & NumPy",
-    "SQL",
-    "React",
-    "Git & GitHub",
-    "Data Visualization",
-  ];
 
   return (
     <div className="page">
@@ -33,11 +22,16 @@ function App() {
         </div>
 
         <div className="terminal-body">
-          <Header name={studentName} title={studentTitle} />
+          <Navbar />
+
           <main className="main-content">
-            <About bio={studentBio} />
-            <Skills skills={skillsList} />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
           </main>
+
           <Footer name={studentName} />
         </div>
       </div>
