@@ -446,3 +446,101 @@ body {
     display: flex;
   }
 }
+
+/* ===== Loading Spinner ===== */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 0;
+  color: var(--dir-color);
+  font-size: 0.9rem;
+}
+
+.spinner-glyph {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--dir-color);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner-text::after {
+  content: '';
+  animation: dots 1.4s steps(4, end) infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+  100% { content: ''; }
+}
+
+/* ===== Error Message ===== */
+.error-message {
+  border: 1px solid #ff5f56;
+  border-radius: 6px;
+  background: rgba(255, 95, 86, 0.08);
+  padding: 0.9rem 1rem;
+  margin: 0.5rem 0;
+  font-size: 0.88rem;
+}
+
+.error-tag {
+  color: #ff5f56;
+  font-weight: 700;
+}
+
+.retry-btn {
+  margin-top: 0.6rem;
+  background: none;
+  border: 1px solid #ff5f56;
+  color: #ff5f56;
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.retry-btn:hover {
+  background: #ff5f56;
+  color: var(--term-bg);
+}
+
+/* ===== Empty state ===== */
+.empty-state {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+/* ===== Project card additions ===== */
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.repo-link {
+  display: inline-block;
+  color: var(--dir-color);
+  font-size: 0.78rem;
+  text-decoration: none;
+  word-break: break-all;
+  border-bottom: 1px dashed transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.repo-link:hover {
+  color: var(--amber);
+  border-bottom-color: var(--amber);
+}

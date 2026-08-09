@@ -1,47 +1,78 @@
+import { useState, useEffect, useCallback } from 'react';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
+
+const GITHUB_USERNAME = 'Taniksha-shah';
+
 function Projects() {
-  const projects = [
-    {
-      name: "credit-fraud-detection",
-      description:
-        "Hybrid anomaly detection system combining Isolation Forest, One-Class SVM, LOF, and an Autoencoder with supervised stacking, plus ablation analysis.",
-      tech: ["Python", "Scikit-learn", "PyTorch"],
-    },
-    {
-      name: "student-burnout-eda",
-      description:
-        "EDA on a 37-feature survey dataset examining how AI tool usage correlates with burnout among CS/IT students.",
-      tech: ["Pandas", "Matplotlib", "Seaborn"],
-    },
-    {
-      name: "house-price-prediction",
-      description:
-        "Regression models (Random Forest, Gradient Boosting) on the King County housing dataset with log-transformed targets.",
-      tech: ["Scikit-learn", "NumPy"],
-    },
-    {
-      name: "veritas-rag-engine",
-      description:
-        "RAG-based hallucination-reduction engine using recursive cross-verification and a citation-attribution module.",
-      tech: ["Python", "LangChain", "Vector DB"],
-    },
-  ];
+  const [repos, setRepos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchRepos = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=12`
+      );
+
+      if (!response.ok) {
+        throw new Error(`GitHub API responded with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      setRepos(data);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch repositories.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRepos();
+  }, [fetchRepos]);
 
   return (
     <section className="page-section projects-page">
-      <h2>student@portfolio:~$ ls -la projects/</h2>
-      <div className="projects-grid">
-        {projects.map((project) => (
-          <article className="project-card" key={project.name}>
-            <h3>{project.name}/</h3>
-            <p>{project.description}</p>
-            <div className="project-tech">
-              {project.tech.map((t) => (
-                <span key={t} className="tech-tag">{t}</span>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
+      <h2>student@portfolio:~$ curl api.github.com/users/{GITHUB_USERNAME}/repos</h2>
+
+      {loading && <LoadingSpinner label="fetching repositories..." />}
+
+      {!loading && error && (
+        <ErrorMessage message={error} onRetry={fetchRepos} />
+      )}
+
+      {!loading && !error && repos.length === 0 && (
+        <p className="empty-state">No repositories found.</p>
+      )}
+
+      {!loading && !error && repos.length > 0 && (
+        <div className="projects-grid">
+          {repos.map((repo) => (
+            <article className="project-card" key={repo.id}>
+                <h3>{repo.name}/</h3>
+                <p>{repo.description || 'No description provided.'}</p>
+                <div className="project-meta">
+                {repo.language && (
+                    <span className="tech-tag">{repo.language}</span>
+                )}
+                <span className="tech-tag">★ {repo.stargazers_count}</span>
+                </div>
+                <a
+                className="repo-link"
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                >
+                {repo.html_url}
+                </a>
+            </article>
+            ))}
+        </div>
+      )}
     </section>
   );
 }
